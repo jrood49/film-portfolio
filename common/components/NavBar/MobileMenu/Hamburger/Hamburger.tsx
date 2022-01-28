@@ -1,7 +1,7 @@
 import { Container, HamburgerMenuLine } from './styles';
 
 type Props = {
-  onClick: (event: MouseEvent) => void;
+  onClick: () => void;
 };
 
 export const Hamburger = ({ onClick }: Props) => {
