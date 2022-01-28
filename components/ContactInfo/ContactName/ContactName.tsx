@@ -8,13 +8,15 @@ type Props = {
 export const ContactName = ({ name, title }: Props) => {
   return (
     <NameContainer>
-      <Name>{name.toUpperCase()} <Title>{title.toUpperCase()}</Title></Name>
+      <Name>{name.toUpperCase()}</Name><Title>{title.toUpperCase()}</Title>
     </NameContainer>
   );
 };
 
 const NameContainer = styled.div`
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   font-size: 20px;
   letter-spacing: 4px;
   margin-bottom: 14px;
@@ -24,11 +26,13 @@ const NameContainer = styled.div`
 
 const Name = styled.h2`
   font-weight: 600;
+  padding: 0 8px;
+  margin-bottom: 0;
 `;
 
-const Title = styled.span`
+const Title = styled.h2`
   font-weight: 400;
-  margin-left: 8px;
+  padding: 0 8px;
 `;
 
 export default ContactName;
