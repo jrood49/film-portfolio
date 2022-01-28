@@ -1,35 +1,31 @@
-import styled from 'styled-components';
 import { GetStaticProps } from 'next';
 import type { NextPage } from 'next';
+import { ParsedUrlQuery } from 'querystring';
 import fetchAPI from '../common/util/API';
 import {
   Category,
-  ContactInfo,
   SiteInfo,
   Project,
 } from '../common/util/API/types';
 import ProjectGrid from '../components/ProjectGrid';
-import NameAndTitle from '../components/ContactInfo/ContactName';
 import DefaultPageLayout from '../common/components/DefaultPageLayout';
 
 type Props = {
   categories: Category[],
+  currentCategory: string,
   siteTitle: string,
   projects: Project[],
-  name: string,
-  title: string,
   instagramLink: string,
   vimeoLink: string,
   facebookLink: string,
   twitterLink: string,
 };
 
-const Home: NextPage<Props> = ({
+const CategoryPage: NextPage<Props> = ({
   categories,
+  currentCategory,
   siteTitle,
   projects,
-  name,
-  title,
   instagramLink,
   vimeoLink,
   facebookLink,
@@ -37,36 +33,32 @@ const Home: NextPage<Props> = ({
 }) => {
   return (
     <DefaultPageLayout
-      pageTitle={`${name.toUpperCase()} | ${title}`}
+      pageTitle={`${currentCategory?.toUpperCase()} | ${siteTitle.toUpperCase()}`}
       siteTitle={siteTitle}
-      selectedCategory="home"
       categories={categories}
+      selectedCategory={currentCategory}
       instagramLink={instagramLink}
       vimeoLink={vimeoLink}
       facebookLink={facebookLink}
       twitterLink={twitterLink}
     >
-      <ProjectGrid projects={projects} category="home" />
-      <NameContainer>
-        <NameAndTitle name={name} title={title} />
-      </NameContainer>
+      <ProjectGrid projects={projects} category={currentCategory} />
     </DefaultPageLayout>
   );
 };
 
-const NameContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 72px;
-`;
+type Params = {
+  category: string,
+} & ParsedUrlQuery;
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getStaticProps: GetStaticProps = async (context) => {
+  const { category: slug } = context.params as Params;
   const categories = await fetchAPI<Category[]>('categories');
   if (!categories || !categories[0]) return { notFound: true };
-  const category = categories.find((_category) => _category.slug === 'home');
 
-  const contactInfo = await fetchAPI<ContactInfo>('contact-info');
-  if (!contactInfo) return { notFound: true };
+  const currentCategory = slug || 'home';
+  const category = categories.find((_category) => _category.slug === currentCategory);
+  if (!category) return { notFound: true };
 
   const siteInfo = await fetchAPI<SiteInfo>('site-info');
   if (!siteInfo) return { notFound: true };
@@ -78,10 +70,8 @@ export const getStaticProps: GetStaticProps = async () => {
   return {
     props: {
       categories,
-      currentCategory: 'home',
+      currentCategory,
       projects,
-      name: contactInfo?.name,
-      title: siteInfo?.title,
       siteTitle: siteInfo?.site_name,
       instagramLink: siteInfo?.instagram,
       vimeoLink: siteInfo?.vimeo,
@@ -92,4 +82,18 @@ export const getStaticProps: GetStaticProps = async () => {
   };
 };
 
-export default Home;
+export const getStaticPaths = async () => {
+  const categories = await fetchAPI<Category[]>('categories');
+
+  // Get the paths we want to pre-render based on posts
+  const paths = categories.map((category) => ({
+    params: { category: category.slug },
+  }));
+
+  // We'll pre-render only these paths at build time.
+  // { fallback: blocking } will server-render pages
+  // on-demand if the path doesn't exist.
+  return { paths, fallback: 'blocking' };
+};
+
+export default CategoryPage;

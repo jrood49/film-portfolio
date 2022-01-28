@@ -1,87 +1,85 @@
-import styled from 'styled-components';
 import { GetStaticProps } from 'next';
-import type { NextPage } from 'next';
+import styled from 'styled-components';
 import fetchAPI from '../common/util/API';
 import {
   Category,
   ContactInfo,
   SiteInfo,
-  Project,
 } from '../common/util/API/types';
-import ProjectGrid from '../components/ProjectGrid';
-import NameAndTitle from '../components/ContactInfo/ContactName';
+import ContactDetails from '../components/ContactInfo/ContactDetails';
+import ContactName from '../components/ContactInfo/ContactName';
 import DefaultPageLayout from '../common/components/DefaultPageLayout';
 
 type Props = {
-  categories: Category[],
-  siteTitle: string,
-  projects: Project[],
   name: string,
+  email: string,
+  phoneNumber: string,
   title: string,
+  siteTitle: string,
+  categories: Category[],
   instagramLink: string,
   vimeoLink: string,
   facebookLink: string,
   twitterLink: string,
 };
 
-const Home: NextPage<Props> = ({
-  categories,
-  siteTitle,
-  projects,
+const Contact = ({
   name,
+  email,
+  phoneNumber,
   title,
+  siteTitle,
+  categories,
   instagramLink,
   vimeoLink,
   facebookLink,
   twitterLink,
-}) => {
+}: Props) => {
   return (
     <DefaultPageLayout
-      pageTitle={`${name.toUpperCase()} | ${title}`}
+      pageTitle={`CONTACT | ${siteTitle.toUpperCase()}`}
       siteTitle={siteTitle}
-      selectedCategory="home"
       categories={categories}
+      selectedCategory="contact"
       instagramLink={instagramLink}
       vimeoLink={vimeoLink}
       facebookLink={facebookLink}
       twitterLink={twitterLink}
     >
-      <ProjectGrid projects={projects} category="home" />
-      <NameContainer>
-        <NameAndTitle name={name} title={title} />
-      </NameContainer>
+      <Container>
+        <ContactName name={name} title={title} />
+        <ContactDetails phoneNumber={phoneNumber} email={email} />
+      </Container>
     </DefaultPageLayout>
   );
 };
 
-const NameContainer = styled.div`
+const Container = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: 72px;
+  align-items: center;
+  margin-top: 180px;
+  flex-direction: column;
+  color: ${({ theme }) => theme.colors.primary};
+  font-family: ${({ theme }) => theme.fonts.secondary};
 `;
 
 export const getStaticProps: GetStaticProps = async () => {
-  const categories = await fetchAPI<Category[]>('categories');
-  if (!categories || !categories[0]) return { notFound: true };
-  const category = categories.find((_category) => _category.slug === 'home');
-
   const contactInfo = await fetchAPI<ContactInfo>('contact-info');
   if (!contactInfo) return { notFound: true };
+
+  const categories = await fetchAPI<Category[]>('categories');
 
   const siteInfo = await fetchAPI<SiteInfo>('site-info');
   if (!siteInfo) return { notFound: true };
 
-  const projects = category && Array.isArray(category.projects)
-    ? category.projects.sort((a, b) => a.priority - b.priority)
-    : [];
-
   return {
     props: {
-      categories,
-      currentCategory: 'home',
-      projects,
       name: contactInfo?.name,
+      phoneNumber: contactInfo?.phone_number,
+      email: contactInfo?.email,
       title: siteInfo?.title,
+      categories,
       siteTitle: siteInfo?.site_name,
       instagramLink: siteInfo?.instagram,
       vimeoLink: siteInfo?.vimeo,
@@ -92,4 +90,4 @@ export const getStaticProps: GetStaticProps = async () => {
   };
 };
 
-export default Home;
+export default Contact;
