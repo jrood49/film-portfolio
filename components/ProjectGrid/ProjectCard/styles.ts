@@ -6,7 +6,7 @@ type ConatinerProps = {
 };
 
 export const Container = styled.div<ConatinerProps>`
-  background-image: url("http://localhost:1337${(props) => (props.image)}");
+  background-image: url("${(props) => (`http://137.184.36.63:1337${props.image}`)}");
   background-position: center;
   background-size: cover;
   width: 26vw;
