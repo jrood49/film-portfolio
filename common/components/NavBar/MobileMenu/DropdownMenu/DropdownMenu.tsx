@@ -3,7 +3,7 @@ import { Container } from './styles';
 
 type Props = {
   isOpen?: boolean,
-  onClick: (event: MouseEvent) => void;
+  onClick: () => void;
 } & typeof defaultProps;
 
 const defaultProps = {
