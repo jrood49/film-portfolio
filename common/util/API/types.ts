@@ -4,6 +4,7 @@ export type Project = {
   categories: Category[],
   slug: string,
   priority: number,
+  project_type: 'vimeo' | 'link',
   thumbnail: {
     url: string,
     formats: {
