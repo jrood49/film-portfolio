@@ -20,7 +20,9 @@ export const ProjectGrid: React.FC<Props> = ({ projects, category }) => {
           slug={project.slug}
           title={project.title}
           thumbnail={project.thumbnail?.formats?.medium?.url}
+          url={project.url}
           category={category}
+          projectType={project.project_type}
         />
       ))}
     </Container>
