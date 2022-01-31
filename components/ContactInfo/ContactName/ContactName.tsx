@@ -20,7 +20,7 @@ const NameContainer = styled.div`
   font-size: 20px;
   letter-spacing: 4px;
   margin-bottom: 14px;
-  font-family: ${({ theme }) => theme.fonts.secondary};
+  font-family: ${({ theme }) => theme.fonts.primary};
   color: ${({ theme }) => theme.colors.primary};
 `;
 

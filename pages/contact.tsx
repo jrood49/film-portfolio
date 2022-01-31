@@ -61,7 +61,7 @@ const Container = styled.div`
   margin-top: 180px;
   flex-direction: column;
   color: ${({ theme }) => theme.colors.primary};
-  font-family: ${({ theme }) => theme.fonts.secondary};
+  font-family: ${({ theme }) => theme.fonts.primary};
 `;
 
 export const getStaticProps: GetStaticProps = async () => {
