@@ -12,8 +12,7 @@ const theme = {
     bg: 'white',
   },
   fonts: {
-    primary: '"Open Sans", Arial, sans-serif',
-    secondary: '"Lato", Helvetica, Arial, Lucida, sans-serif',
+    primary: '"Lato", Helvetica, Arial, Lucida, sans-serif',
   },
 };
 
